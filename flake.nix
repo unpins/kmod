@@ -12,5 +12,9 @@
     unpins-lib.lib.mkStandaloneFlake {
       inherit self;
       name = "kmod";
+      # nixpkgs `meta.platforms` for kmod is *-linux only; the tool reads
+      # /sys/module, /proc/modules and uses init_module/finit_module/
+      # delete_module syscalls — no Darwin equivalent.
+      linuxOnly = true;
     };
 }
