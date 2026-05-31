@@ -11,7 +11,7 @@ Linux-only: kmod loads and inspects Linux kernel modules and talks to `/sys/modu
 
 ## Usage
 
-The package ships one executable, `kmod`. `unpin install` materializes per-applet shims (`modprobe`, `depmod`, `insmod`, `lsmod`, `modinfo`, `rmmod`) next to the multicall using argv[0] dispatch. To run a command directly without installing, invoke as `kmod <applet>`:
+The package ships one executable, `kmod`. `unpin kmod` materializes per-applet shims (`modprobe`, `depmod`, `insmod`, `lsmod`, `modinfo`, `rmmod`) next to the multicall using argv[0] dispatch. To run a command directly without installing, invoke as `kmod <applet>`:
 
 ```bash
 kmod modprobe ext4
@@ -57,6 +57,10 @@ nix run github:unpins/kmod -- modprobe ext4
 ```
 
 The first invocation will offer to add the [unpins.cachix.org](https://unpins.cachix.org) substituter so most pulls come pre-built.
+
+## Man pages
+
+The man pages are embedded in the binary — read with `unpin man kmod`. Covers the applet pages (`kmod.8`, `modprobe.8`, `depmod.8`, `insmod.8`, `lsmod.8`, `modinfo.8`, `rmmod.8`) and the config/format pages (`modprobe.d.5`, `depmod.d.5`, `modules.dep.5`).
 
 ## Manual download
 
