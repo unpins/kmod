@@ -1,6 +1,6 @@
 # kmod
 
-Standalone build of [kmod](https://git.kernel.org/pub/scm/utils/kernel/kmod/kmod.git), shipped as a single multicall binary that dispatches to `modprobe`, `depmod`, `insmod`, `lsmod`, `modinfo`, and `rmmod` via argv[0].
+Standalone build of [kmod](https://git.kernel.org/pub/scm/utils/kernel/kmod/kmod.git), shipped as a single binary that provides the `modprobe`, `depmod`, `insmod`, `lsmod`, `modinfo`, and `rmmod` programs.
 
 [![CI](https://github.com/unpins/kmod/actions/workflows/kmod.yml/badge.svg)](https://github.com/unpins/kmod/actions)
 ![Linux](https://img.shields.io/badge/Linux-✓-success?logo=linux&logoColor=white)
@@ -11,37 +11,22 @@ Linux-only: kmod loads and inspects Linux kernel modules and talks to `/sys/modu
 
 ## Usage
 
-The package ships one executable, `kmod`. `unpin kmod` materializes per-applet shims (`modprobe`, `depmod`, `insmod`, `lsmod`, `modinfo`, `rmmod`) next to the multicall using argv[0] dispatch. To run a command directly without installing, invoke as `kmod <applet>`:
+Run a program with [unpin](https://github.com/unpins/unpin):
 
 ```bash
-kmod modprobe ext4
-kmod depmod -a
-kmod lsmod
-kmod modinfo ext4
+unpin kmod modprobe ext4
+unpin kmod depmod -a
+unpin kmod lsmod
+unpin kmod modinfo ext4
 ```
 
-Or create symlinks named after the commands you want to use as bare names:
+To install the programs onto your PATH:
 
 ```bash
-ln -s "$(command -v kmod)" ~/bin/modprobe
-modprobe ext4
+unpin install kmod
 ```
 
-Built-in applets: `depmod`, `insmod`, `lsmod`, `modinfo`, `modprobe`, `rmmod`.
-
-## Installation
-
-Install with [unpin](https://github.com/unpins/unpin):
-
-```bash
-unpin kmod
-```
-
-Or run without installing:
-
-```bash
-unpin run kmod
-```
+`unpin install kmod` creates the `modprobe`, `depmod`, `insmod`, `lsmod`, `modinfo`, and `rmmod` commands.
 
 ## Build locally
 
