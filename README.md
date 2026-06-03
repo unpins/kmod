@@ -45,7 +45,7 @@ The first invocation will offer to add the [unpins.cachix.org](https://unpins.ca
 
 ## Man pages
 
-The man pages are embedded in the binary — read with `unpin man kmod`. Covers the applet pages (`kmod.8`, `modprobe.8`, `depmod.8`, `insmod.8`, `lsmod.8`, `modinfo.8`, `rmmod.8`) and the config/format pages (`modprobe.d.5`, `depmod.d.5`, `modules.dep.5`).
+The man pages are embedded in the binary — read with `unpin man kmod`. Covers the program pages (`kmod.8`, `modprobe.8`, `depmod.8`, `insmod.8`, `lsmod.8`, `modinfo.8`, `rmmod.8`) and the config/format pages (`modprobe.d.5`, `depmod.d.5`, `modules.dep.5`).
 
 ## Manual download
 
