@@ -26,7 +26,7 @@ To install the programs onto your PATH:
 unpin install kmod
 ```
 
-`unpin install kmod` creates the `modprobe`, `depmod`, `insmod`, `lsmod`, `modinfo`, and `rmmod` commands.
+`unpin install kmod` creates the `modprobe`, `depmod`, `lsmod`, `modinfo`, … commands (full list: `unpin info kmod`).
 
 ## Build locally
 
