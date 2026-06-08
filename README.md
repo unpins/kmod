@@ -1,11 +1,11 @@
 # kmod
 
-Standalone build of [kmod](https://git.kernel.org/pub/scm/utils/kernel/kmod/kmod.git), shipped as a single binary that provides the `modprobe`, `depmod`, `insmod`, `lsmod`, `modinfo`, and `rmmod` programs.
+[kmod](https://git.kernel.org/pub/scm/utils/kernel/kmod/kmod.git) — a single self-contained binary that provides the `modprobe`, `depmod`, `insmod`, `lsmod`, `modinfo`, and `rmmod` programs, built natively for Linux.
 
 [![CI](https://github.com/unpins/kmod/actions/workflows/kmod.yml/badge.svg)](https://github.com/unpins/kmod/actions)
 ![Linux](https://img.shields.io/badge/Linux-✓-success?logo=linux&logoColor=white)
 
-Part of the [unpins](https://unpins.org) project — native single-binary builds with no third-party runtime dependencies.
+Part of the [unpins](https://unpins.org) catalog; install it with [`unpin`](https://github.com/unpins/unpin): `unpin install kmod`.
 
 Linux-only: kmod loads and inspects Linux kernel modules and talks to `/sys/module`, `/proc/modules`, and the `init_module`/`finit_module`/`delete_module` syscalls.
 
@@ -28,6 +28,10 @@ unpin install kmod
 
 `unpin install kmod` creates the `modprobe`, `depmod`, `lsmod`, `modinfo`, … commands (full list: `unpin info kmod`).
 
+## Man pages
+
+The man pages are embedded in the binary — read with `unpin man kmod`. Covers the program pages (`kmod.8`, `modprobe.8`, `depmod.8`, `insmod.8`, `lsmod.8`, `modinfo.8`, `rmmod.8`) and the config/format pages (`modprobe.d.5`, `depmod.d.5`, `modules.dep.5`).
+
 ## Build locally
 
 ```bash
@@ -42,10 +46,6 @@ nix run github:unpins/kmod -- modprobe ext4
 ```
 
 The first invocation will offer to add the [unpins.cachix.org](https://unpins.cachix.org) substituter so most pulls come pre-built.
-
-## Man pages
-
-The man pages are embedded in the binary — read with `unpin man kmod`. Covers the program pages (`kmod.8`, `modprobe.8`, `depmod.8`, `insmod.8`, `lsmod.8`, `modinfo.8`, `rmmod.8`) and the config/format pages (`modprobe.d.5`, `depmod.d.5`, `modules.dep.5`).
 
 ## Manual download
 
