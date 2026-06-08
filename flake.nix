@@ -22,6 +22,9 @@
     unpins-lib.lib.mkStandaloneFlake {
       inherit self;
       name = "kmod";
+      # nixpkgs lists every component (LGPL libkmod, …); the shipped tools
+      # (modprobe/depmod/…) are GPL-2.0-or-later — pin that as the effective license.
+      license = "GPL-2.0-or-later";
       linuxOnly = true;
       build = pkgs:
         unpins-lib.lib.withAliases pkgs
