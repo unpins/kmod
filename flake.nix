@@ -22,6 +22,12 @@
     unpins-lib.lib.mkStandaloneFlake {
       inherit self;
       name = "kmod";
+
+      # Build via the unpin-llvm engine + emit a bitcode multicall module.
+      engine = "unpin-llvm";
+      multicall = {
+        programs = [{ name = "kmod"; aliases = [ "insmod" "rmmod" "lsmod" "modprobe" "modinfo" "depmod" ]; }];
+      };
       # nixpkgs lists every component (LGPL libkmod, …); the shipped tools
       # (modprobe/depmod/…) are GPL-2.0-or-later — pin that as the effective license.
       license = "GPL-2.0-or-later";
