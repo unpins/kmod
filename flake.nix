@@ -33,23 +33,6 @@
       license = "GPL-2.0-or-later";
       linuxOnly = true;
       build = pkgs:
-        let
-          # 32-bit ARM (armv7l/armv6): static `libcrypto.pc` lists `-latomic` in
-          # Libs.private, so kmod's own link inherits it via pkg-config — but a
-          # static-musl + compiler-rt toolchain ships no `libatomic.a` (the
-          # `__atomic_*` libcalls live in compiler-rt builtins). nix-lib's
-          # native-overlay/openssl.nix stubs this for openssl's *own* app links,
-          # but that stub is scoped to the openssl derivation and doesn't reach
-          # kmod. Provide an empty `libatomic.a` here (as a buildInput so the
-          # cc-wrapper adds its `-L`); `-latomic` then resolves to the empty
-          # archive while the real symbols come from builtins. Empty ar = the
-          # arch-independent 8-byte `!<arch>\n`. 64-bit targets never emit
-          # `-latomic`, hence the isAarch32 gate.
-          libatomicStub = pkgs.runCommand "libatomic-stub" { } ''
-            mkdir -p "$out/lib"
-            printf '!<arch>\n' > "$out/lib/libatomic.a"
-          '';
-        in
         unpins-lib.lib.withAliases pkgs
           {
             primary = "kmod";
@@ -60,12 +43,13 @@
           # and openssl/libcrypto (PKCS#7 module-signature parsing in
           # libkmod-signature / `modinfo --signature`). Ship every upstream
           # feature: add both. `pkgs.pkgsStatic.openssl` is already the
-          # retargeted/static-fixed one the engine auto-wires (autoWiredFixes),
-          # so no by-hand roll. openssl (not the project's default mbedtls)
+          # retargeted/static-fixed one the engine auto-wires (autoWiredFixes) —
+          # incl. the arm32 `-latomic` strip from its .pc — so kmod's
+          # `pkg-config --static libcrypto` links clean on armv7l with no
+          # per-consumer stub. openssl (not the project's default mbedtls)
           # because kmod's signature code is openssl-API-specific.
           (pkgs.pkgsStatic.kmod.overrideAttrs (old: {
-            buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.pkgsStatic.zlib pkgs.pkgsStatic.openssl ]
-              ++ pkgs.lib.optional pkgs.stdenv.hostPlatform.isAarch32 libatomicStub;
+            buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.pkgsStatic.zlib pkgs.pkgsStatic.openssl ];
             configureFlags = (old.configureFlags or [ ]) ++ [ "--with-zlib" "--with-openssl" ];
           }));
     };

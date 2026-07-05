@@ -39,11 +39,10 @@ The man pages are embedded in the binary — read with `unpin man kmod`. Covers 
   for PKCS#7 module-signature parsing (`modinfo` signature output). nixpkgs'
   stock kmod wires only xz+zstd; this build adds zlib and openssl so nothing
   upstream supports is dropped. openssl (not the project's usual mbedtls)
-  because kmod's signature code is written against the openssl API.
-- **32-bit ARM link fix.** On armv7l, static `libcrypto` propagates `-latomic`,
-  which a static-musl + compiler-rt toolchain has no `libatomic.a` for (the
-  `__atomic_*` libcalls live in compiler-rt builtins). An empty `libatomic.a`
-  stub satisfies the flag; the real symbols still come from builtins.
+  because kmod's signature code is written against the openssl API. (On armv7l,
+  static `libcrypto` used to propagate a bare `-latomic` that a static-musl +
+  compiler-rt toolchain can't resolve; that's stripped from openssl's `.pc` in
+  nix-lib now, so kmod links clean with no per-package workaround.)
 
 ## Build locally
 
