@@ -32,6 +32,19 @@ unpin install kmod
 
 The man pages are embedded in the binary — read with `unpin man kmod`. Covers the program pages (`kmod.8`, `modprobe.8`, `depmod.8`, `insmod.8`, `lsmod.8`, `modinfo.8`, `rmmod.8`) and the config/format pages (`modprobe.d.5`, `depmod.d.5`, `modules.dep.5`).
 
+## Build notes
+
+- **Every upstream feature enabled.** Module decompression for all three
+  backends — `zstd`, `xz` and `zlib` (gzip `.ko.gz`) — plus `openssl`/libcrypto
+  for PKCS#7 module-signature parsing (`modinfo` signature output). nixpkgs'
+  stock kmod wires only xz+zstd; this build adds zlib and openssl so nothing
+  upstream supports is dropped. openssl (not the project's usual mbedtls)
+  because kmod's signature code is written against the openssl API.
+- **32-bit ARM link fix.** On armv7l, static `libcrypto` propagates `-latomic`,
+  which a static-musl + compiler-rt toolchain has no `libatomic.a` for (the
+  `__atomic_*` libcalls live in compiler-rt builtins). An empty `libatomic.a`
+  stub satisfies the flag; the real symbols still come from builtins.
+
 ## Build locally
 
 ```bash
