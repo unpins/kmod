@@ -32,25 +32,20 @@
       # (modprobe/depmod/…) are GPL-2.0-or-later — pin that as the effective license.
       license = "GPL-2.0-or-later";
       linuxOnly = true;
+      # nixpkgs' kmod only wires xz+zstd; upstream also supports zlib
+      # (load gzip-compressed `.ko.gz` modules — CONFIG_MODULE_COMPRESS_GZIP)
+      # and openssl/libcrypto (PKCS#7 module-signature parsing in
+      # libkmod-signature / `modinfo --signature`). Ship every upstream
+      # feature: add both. `pkgs.pkgsStatic.openssl` is already the
+      # retargeted/static-fixed one the engine auto-wires (autoWiredFixes) —
+      # incl. the arm32 `-latomic` strip from its .pc — so kmod's
+      # `pkg-config --static libcrypto` links clean on armv7l with no
+      # per-consumer stub. openssl (not the project's default mbedtls)
+      # because kmod's signature code is openssl-API-specific.
       build = pkgs:
-        unpins-lib.lib.withAliases pkgs
-          {
-            primary = "kmod";
-            aliasesFromSymlinksIn = "bin";
-          }
-          # nixpkgs' kmod only wires xz+zstd; upstream also supports zlib
-          # (load gzip-compressed `.ko.gz` modules — CONFIG_MODULE_COMPRESS_GZIP)
-          # and openssl/libcrypto (PKCS#7 module-signature parsing in
-          # libkmod-signature / `modinfo --signature`). Ship every upstream
-          # feature: add both. `pkgs.pkgsStatic.openssl` is already the
-          # retargeted/static-fixed one the engine auto-wires (autoWiredFixes) —
-          # incl. the arm32 `-latomic` strip from its .pc — so kmod's
-          # `pkg-config --static libcrypto` links clean on armv7l with no
-          # per-consumer stub. openssl (not the project's default mbedtls)
-          # because kmod's signature code is openssl-API-specific.
-          (pkgs.pkgsStatic.kmod.overrideAttrs (old: {
-            buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.pkgsStatic.zlib pkgs.pkgsStatic.openssl ];
-            configureFlags = (old.configureFlags or [ ]) ++ [ "--with-zlib" "--with-openssl" ];
-          }));
+        pkgs.pkgsStatic.kmod.overrideAttrs (old: {
+          buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.pkgsStatic.zlib pkgs.pkgsStatic.openssl ];
+          configureFlags = (old.configureFlags or [ ]) ++ [ "--with-zlib" "--with-openssl" ];
+        });
     };
 }
