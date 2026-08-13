@@ -22,6 +22,8 @@
     unpins-lib.lib.mkStandaloneFlake {
       inherit self;
       name = "kmod";
+      smoke = [ "--version" ];
+      smokePattern = "^kmod version [0-9]+";
 
       # Build via the unpin-llvm engine + emit a bitcode multicall module.
       engine = "unpin-llvm";
