@@ -48,6 +48,20 @@
         pkgs.pkgsStatic.kmod.overrideAttrs (old: {
           buildInputs = (old.buildInputs or [ ]) ++ [ pkgs.pkgsStatic.zlib pkgs.pkgsStatic.openssl ];
           configureFlags = (old.configureFlags or [ ]) ++ [ "--with-zlib" "--with-openssl" ];
+          # Off, and measured rather than inherited. Four walls, in the order
+          # they appear: `make check` first builds test kernel modules against
+          # /lib/modules/`uname -r`/build, which the sandbox does not have and
+          # which would tie the result to this host's kernel;
+          # `--disable-test-modules` gets past that (cached .ko) and lands on
+          # setup-rootfs.sh, fixable with patchShebangs plus zstd/xz at check
+          # time; past THAT the harness does not compile against musl —
+          # testsuite.c calls `basename()` with no <libgen.h>, which only
+          # glibc's <string.h> declares. And the wall behind all of them is the
+          # design: the suite works by LD_PRELOADing path.so/uname.so into the
+          # tools under test, and a static binary has no dynamic loader to
+          # honour it. Every step above was run; the last one is what the
+          # harness is.
+          doCheck = false;
         });
     };
 }
