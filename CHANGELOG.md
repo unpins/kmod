@@ -2,6 +2,8 @@
 
 ## [Unreleased]
 
+## [31-2] - 2026-09-26
+
 ### Added
 
 - `modinfo` now reports who signed a module and how. Against a stock Debian
