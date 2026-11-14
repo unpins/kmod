@@ -8,12 +8,9 @@
 
   inputs.unpins-lib.url = "github:unpins/nix-lib";
 
-  # Upstream kmod ships a single multicall binary (`tools/kmod.c` does
-  # argv[0] dispatch) plus a symlink per tool (depmod, insmod, lsmod,
-  # modinfo, modprobe, rmmod). Mirrors the coreutils pattern: ship only
-  # the multicall, embed the applet names as an UNPIN_META block so
-  # unpin's installer can recreate the argv[0]-dispatch shims at install
-  # time.
+  # Upstream kmod already dispatches on the program name (`tools/kmod.c`).
+  # The names in `multicall.programs[].aliases` are the commands
+  # `unpin install` creates.
   #
   # nixpkgs `meta.platforms` for kmod is *-linux only; the tool reads
   # /sys/module, /proc/modules and uses init_module/finit_module/
@@ -37,8 +34,9 @@
       # nixpkgs' kmod only wires xz+zstd; upstream also supports zlib
       # (load gzip-compressed `.ko.gz` modules — CONFIG_MODULE_COMPRESS_GZIP)
       # and openssl/libcrypto (PKCS#7 module-signature parsing in
-      # libkmod-signature / `modinfo --signature`). Ship every upstream
-      # feature: add both. `pkgs.pkgsStatic.openssl` is already the
+      # libkmod-signature / `modinfo --signature`). Add both (the
+      # experimental tools stay off, as upstream and nixpkgs ship them).
+      # `pkgs.pkgsStatic.openssl` is already the
       # retargeted/static-fixed one the engine auto-wires (autoWiredFixes) —
       # incl. the arm32 `-latomic` strip from its .pc — so kmod's
       # `pkg-config --static libcrypto` links clean on armv7l with no
