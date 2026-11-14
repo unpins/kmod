@@ -40,12 +40,20 @@ The man pages are embedded in the binary — read with `unpin man kmod`. Covers 
 
 ## Build notes
 
-- **Every upstream feature enabled.** Module decompression for all three
-  backends — `zstd`, `xz` and `zlib` (gzip `.ko.gz`) — plus `openssl`/libcrypto
-  for PKCS#7 module-signature parsing (`modinfo` signature output). nixpkgs'
-  stock kmod wires only xz+zstd; this build adds zlib and openssl so nothing
-  upstream supports is dropped. openssl (not the project's usual mbedtls)
-  because kmod's signature code is written against the openssl API.
+- Module decompression for all three backends — `zstd`, `xz` and `zlib`
+  (gzip `.ko.gz`) — plus `openssl`/libcrypto for PKCS#7 module-signature
+  parsing (`modinfo` signature output). nixpkgs' stock kmod wires only
+  xz+zstd; this build adds zlib and openssl. openssl (not the project's usual
+  mbedtls) because kmod's signature code is written against the openssl API.
+- **Not included:** the experimental `kmod insert`/`kmod remove` commands.
+  Upstream keeps them off by default, and so does nixpkgs.
+- Modules are looked up first under the NixOS directories
+  (`/run/booted-system/kernel-modules`, `/run/current-system/kernel-modules`),
+  then under `/lib/modules`. Set `MODULE_DIR` to point at another directory.
+  This comes from the nixpkgs build.
+- **Tests:** kmod's test suite isn't run — it needs kernel headers for the
+  running kernel and works by preloading helper libraries into the programs,
+  which a single self-contained binary cannot load.
 
 ## Build locally
 
